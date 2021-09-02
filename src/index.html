@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Calidad del Aire</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!--<link href='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox/gl.css' rel="stylesheet"/>-->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css" rel="stylesheet" />
+  <style>
+      body {
+        margin: 400;
+        padding: 300;
+      }
+    </style>
+
+ <!-- <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css" rel="stylesheet" />-->
+
+</head>
+<body>
+	
+  <app-root></app-root>
+</body>
+<center>
+<body>
+	<!--<nav>
+		<label class="logo">Calidad del Aire Ecuador</label>
+		<ul>
+			<li><a class="active" href="#">Acerca de</a></li>
+		</ul>
+	</nav>-->
+    <div id="map" style="width: 1315px; height: 500px;"></div>
+    <script>
+      var apiKey = "c526d02cb2c5471ea924cb57d13b9368"; // Your BreezoMeter API key
+      var mapBoxAccessToken = "pk.eyJ1IjoiZGF5YW5uZWhlcm1vc2EiLCJhIjoiY2tzeXZxZWNkMW9iaTJ1dGNzMzdjMW1vZyJ9.y2Tbb07wpdmf9QGGvFHYBQ"; // your mapbox access token from: https://account.mapbox.com
+
+      var errorMessageBrz =
+        "Update the variable 'apiKey' with a BreezoMeter API key to see the tiles. Contact BreezoMeter if you need any help:    breezometer.com/contact-us";
+      var errorMessageMapbox =
+        "Update the variable 'mapBoxAccessToken' with a Mapbox Access Token to initialize the Mapbox SDK. You can get it from:                https://account.mapbox.com";
+
+      if (apiKey === "") alert(errorMessageBrz);
+      if (mapBoxAccessToken === "") alert(errorMessageMapbox);
+
+      var map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/streets-v11", // your stylesheet location
+        center: [-78.5248, -0.22521], // starting position [lng, lat]
+        zoom: 9, // starting zoom
+        accessToken: mapBoxAccessToken
+
+      });
+
+      map.on("load", function() {
+        addRasterSource();
+        addRasterLayer();
+      });
+
+      function addRasterSource() {
+        map.addSource("breezometer-tiles", {
+          type: "raster",
+          tiles: [
+            `https://tiles.breezometer.com/v1/air-quality/breezometer-aqi/current-conditions/{z}/{x}/{y}.png?key=${apiKey}&breezometer_aqi_color=indiper`
+          ],
+          tileSize: 256,
+          maxzoom: 8
+        });
+      }
+
+      function addRasterLayer() {
+        map.addLayer(
+          {
+            id: "breezometer-tiles",
+            type: "raster",
+            source: "breezometer-tiles",
+            minzoom: 0,
+            maxzoom: 22,
+            paint: {
+              "raster-opacity": 0.6
+            }
+          },
+          "admin-1-boundary-bg"
+        );
+      }
+    </script>
+  </body>
+  </center>
+   <footer>
+      <p class="text-center">Copyright @2021 | Diseñado por  <a href="https://www.breezometer.com/">Breezometer</a></p>
+    </footer>
+</html>
